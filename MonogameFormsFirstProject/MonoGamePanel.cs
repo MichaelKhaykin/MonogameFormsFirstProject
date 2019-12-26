@@ -21,6 +21,8 @@ namespace MonogameFormsFirstProject
 
         public Vector2 StartPosition { get; set; }
 
+        public int Offset = 5;
+
         public int SquareSize = 94;
 
         int count = 0;
@@ -84,7 +86,7 @@ namespace MonogameFormsFirstProject
             {
                 var newTexture = new Texture2D(GraphicsDevice, NewImageInfo.Width, NewImageInfo.Height);
                 newTexture.SetData(NewImageInfo.DataToSet);
-                NewImageInfo.currentImageToMove = new Sprite(newTexture, new Vector2(1000, NewImageInfo.Height / 2), Microsoft.Xna.Framework.Color.White, Vector2.One);
+                NewImageInfo.currentImageToMove = new Sprite(newTexture, new Vector2(NewImageInfo.GridIndex.Item2 * SquareSize + StartPosition.X + Offset * NewImageInfo.GridIndex.Item2, NewImageInfo.GridIndex.Item1 * SquareSize + StartPosition.Y + Offset * NewImageInfo.GridIndex.Item1), Microsoft.Xna.Framework.Color.White, Vector2.One);
             }
         }
 

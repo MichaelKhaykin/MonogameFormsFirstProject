@@ -111,9 +111,9 @@ namespace MonogameFormsFirstProject
             int overExtendedAmountX = currentImage.Width - monoGamePanel1.SquareSize;
             int overExtendedAmountY = currentImage.Height - monoGamePanel1.SquareSize;
 
-            for(int i = overExtendedAmountX / 2; i < currentImage.Width - overExtendedAmountX / 2; i++)
+            for(int i = overExtendedAmountX / 2; i < currentImage.Width - overExtendedAmountX / 2 - 1; i++)
             {
-                for(int j = overExtendedAmountY / 2; j < currentImage.Height - overExtendedAmountY / 2; j++)
+                for(int j = overExtendedAmountY / 2; j < currentImage.Height - overExtendedAmountY / 2 - 1; j++)
                 {
                     var color = ((Bitmap)(currentImage.Image)).GetPixel(i, j);
                     croppedImage.SetPixel(i - overExtendedAmountX / 2, j - overExtendedAmountY / 2, color);
@@ -127,7 +127,18 @@ namespace MonogameFormsFirstProject
             currentImage.Height = croppedImage.Height;
 
             currentImage.Location = new System.Drawing.Point((int)(monoGamePanel1.SquareSize * currentThing.GridIndex.Item2 + monoGamePanel1.StartPosition.X) - monoGamePanel1.SquareSize / 2 + 5 * currentThing.GridIndex.Item2, (int)(monoGamePanel1.SquareSize * currentThing.GridIndex.Item1 + monoGamePanel1.StartPosition.Y - monoGamePanel1.SquareSize / 2 + 5 * currentThing.GridIndex.Item1));
+
             
+            GetData((Bitmap)currentImage.Image);
+
+            monoGamePanel1.NewImageInfo = currentThing;
+
+            currentThing = new CurrentMovingImageInfo();
+            currentImage.Image = null;
+            currentImage.Visible = false;
+
+            
+
             Clipboard.Clear();
         }
     }
