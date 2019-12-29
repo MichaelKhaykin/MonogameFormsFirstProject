@@ -19,6 +19,8 @@ namespace MonogameFormsFirstProject
         Texture2D pixel;
         public CurrentMovingImageInfo NewImageInfo { get; set; }
 
+        public List<Sprite> Buttons = new List<Sprite>();
+
         public Vector2 StartPosition { get; set; }
 
         public int Offset = 5;
@@ -82,11 +84,14 @@ namespace MonogameFormsFirstProject
         {
             base.Update(gameTime);
 
-            if(NewImageInfo.DataToSet != null && NewImageInfo.currentImageToMove == null)
+            if(NewImageInfo.DataToSet != null)
             {
                 var newTexture = new Texture2D(GraphicsDevice, NewImageInfo.Width, NewImageInfo.Height);
                 newTexture.SetData(NewImageInfo.DataToSet);
-                NewImageInfo.currentImageToMove = new Sprite(newTexture, new Vector2(NewImageInfo.GridIndex.Item2 * SquareSize + StartPosition.X + Offset * NewImageInfo.GridIndex.Item2, NewImageInfo.GridIndex.Item1 * SquareSize + StartPosition.Y + Offset * NewImageInfo.GridIndex.Item1), Microsoft.Xna.Framework.Color.White, Vector2.One);
+                
+                Buttons.Add(new Sprite(newTexture, new Vector2(NewImageInfo.GridIndex.Item2 * SquareSize + StartPosition.X + Offset * NewImageInfo.GridIndex.Item2, NewImageInfo.GridIndex.Item1 * SquareSize + StartPosition.Y + Offset * NewImageInfo.GridIndex.Item1), Microsoft.Xna.Framework.Color.White, Vector2.One));
+                
+                NewImageInfo.DataToSet = null;
             }
         }
 
@@ -106,11 +111,10 @@ namespace MonogameFormsFirstProject
                 }
             }
 
-            if(NewImageInfo.currentImageToMove != null)
+            foreach(var item in Buttons)
             {
-                NewImageInfo.currentImageToMove.Draw(Editor.spriteBatch);
+                item.Draw(Editor.spriteBatch);
             }
-
 
             Editor.spriteBatch.DrawString(spriteFont, $"Entered count:{count}", new Vector2(50, 50), Microsoft.Xna.Framework.Color.Black);
 

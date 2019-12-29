@@ -16,6 +16,9 @@ namespace MonogameFormsFirstProject
     {
 
         CurrentMovingImageInfo currentThing = new CurrentMovingImageInfo();
+
+        int count = 0;
+        Queue<int> indexes = new Queue<int>();
         public Form1()
         {
             InitializeComponent();
@@ -41,7 +44,7 @@ namespace MonogameFormsFirstProject
 
             currentThing.Width = image.Width;
             currentThing.Height = image.Height;
-    
+
             currentThing.DataToSet = colors;
         }
         private void monoGamePanel1_MouseDown(object sender, MouseEventArgs e)
@@ -49,7 +52,30 @@ namespace MonogameFormsFirstProject
             var result = monoGamePanel1.DoesHitBoxContainMouse();
             var image = (Bitmap)Clipboard.GetImage();
 
-            if (result.Item1 == false)
+            int oldCount = count;
+            for (int i = 0; i < monoGamePanel1.Buttons.Count; i++)
+            {
+                if (monoGamePanel1.Buttons[i].HitBox.Contains(new Microsoft.Xna.Framework.Point(e.X, e.Y)))
+                {
+                    count++;
+                    indexes.Enqueue(i);
+                    break;
+                }
+            }
+
+            if (count % 2 == 0 && count != 0)
+            {
+                var index1 = indexes.Dequeue();
+                var index2 = indexes.Dequeue();
+
+                var temp = monoGamePanel1.Buttons[index1].Position;
+                monoGamePanel1.Buttons[index1].Position = monoGamePanel1.Buttons[index2].Position;
+                monoGamePanel1.Buttons[index2].Position = temp;
+
+                count = 0;
+            }
+
+            if (result.Item1 == false || oldCount != count)
             {
                 return;
             }
@@ -111,16 +137,41 @@ namespace MonogameFormsFirstProject
             int overExtendedAmountX = currentImage.Width - monoGamePanel1.SquareSize;
             int overExtendedAmountY = currentImage.Height - monoGamePanel1.SquareSize;
 
-            for(int i = overExtendedAmountX / 2; i < currentImage.Width - overExtendedAmountX / 2 - 1; i++)
+            bool didEnterX = false;
+            bool didEnterY = false;
+
+            if (overExtendedAmountX < 0)
             {
-                for(int j = overExtendedAmountY / 2; j < currentImage.Height - overExtendedAmountY / 2 - 1; j++)
-                {
-                    var color = ((Bitmap)(currentImage.Image)).GetPixel(i, j);
-                    croppedImage.SetPixel(i - overExtendedAmountX / 2, j - overExtendedAmountY / 2, color);
-                }
+                currentImage.Width = 94;
+                currentImage.Image = new Bitmap(currentImage.Image, currentImage.Width, currentImage.Height);
+
+                didEnterX = true;
+            }
+            if (overExtendedAmountY < 0)
+            {
+                currentImage.Height = 94;
+                currentImage.Image = new Bitmap(currentImage.Image, currentImage.Width, currentImage.Height);
+
+                didEnterY = true;
             }
 
+            overExtendedAmountX = Math.Abs(overExtendedAmountX);
+            overExtendedAmountY = Math.Abs(overExtendedAmountY);
 
+            int startingX = didEnterX ? 0 : overExtendedAmountX / 2;
+            int endingX = didEnterX ? currentImage.Width : currentImage.Width - overExtendedAmountX / 2 - 1;
+
+            int startingY = didEnterY ? 0 : overExtendedAmountY / 2;
+            int endingY = didEnterY ? currentImage.Height : currentImage.Height - overExtendedAmountY / 2 - 1;
+
+            for (int i = startingX; i < endingX; i++)
+            {
+                for (int j = startingY; j < endingY; j++)
+                {
+                    var color = ((Bitmap)(currentImage.Image)).GetPixel(i, j);
+                    croppedImage.SetPixel(i - startingX, j - startingY, color);
+                }
+            }
 
             currentImage.Image = croppedImage;
             currentImage.Width = croppedImage.Width;
@@ -128,7 +179,7 @@ namespace MonogameFormsFirstProject
 
             currentImage.Location = new System.Drawing.Point((int)(monoGamePanel1.SquareSize * currentThing.GridIndex.Item2 + monoGamePanel1.StartPosition.X) - monoGamePanel1.SquareSize / 2 + 5 * currentThing.GridIndex.Item2, (int)(monoGamePanel1.SquareSize * currentThing.GridIndex.Item1 + monoGamePanel1.StartPosition.Y - monoGamePanel1.SquareSize / 2 + 5 * currentThing.GridIndex.Item1));
 
-            
+
             GetData((Bitmap)currentImage.Image);
 
             monoGamePanel1.NewImageInfo = currentThing;
@@ -137,7 +188,8 @@ namespace MonogameFormsFirstProject
             currentImage.Image = null;
             currentImage.Visible = false;
 
-            
+            scaleXBox.Clear();
+            scaleYBox.Clear();
 
             Clipboard.Clear();
         }
