@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,15 @@ namespace MonogameFormsFirstProject
 {
     public class Sprite
     {
+        [JsonIgnore]
         public Texture2D Texture { get; set; }
 
+        public Color[] TextureData { get; set; }
+        
+        [JsonProperty("Position")]
         private Vector2 position;
+
+        [JsonIgnore]
         public ref Vector2 Position
         {
             get
@@ -22,7 +29,10 @@ namespace MonogameFormsFirstProject
         }
         public Color Color { get; set; }
 
+        [JsonProperty("Scale")]
         private Vector2 scale;
+
+        [JsonIgnore]
         public ref Vector2 Scale
         {
             get
@@ -71,11 +81,14 @@ namespace MonogameFormsFirstProject
             Color = color;
             Scale = scale;
 
-          
-         
             SourceRectangle = null;
         }
 
+        public void SetTextureData()
+        {
+            TextureData = new Color[Form1.SquareSize * Form1.SquareSize];
+            Texture.GetData(TextureData);
+        }
         public void Draw(SpriteBatch sb)
         {
                

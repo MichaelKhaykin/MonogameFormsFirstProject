@@ -9,16 +9,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace MonogameFormsFirstProject
 {
     public partial class Form1 : Form
     {
-
         CurrentMovingImageInfo currentThing = new CurrentMovingImageInfo();
-
         int count = 0;
         Queue<int> indexes = new Queue<int>();
+  
+        public static int SquareSize { get; } = 94;
         public Form1()
         {
             InitializeComponent();
@@ -53,9 +55,9 @@ namespace MonogameFormsFirstProject
             var image = (Bitmap)Clipboard.GetImage();
 
             int oldCount = count;
-            for (int i = 0; i < monoGamePanel1.Buttons.Count; i++)
+            for (int i = 0; i < monoGamePanel1.Tab.Buttons.Count; i++)
             {
-                if (monoGamePanel1.Buttons[i].HitBox.Contains(new Microsoft.Xna.Framework.Point(e.X, e.Y)))
+                if (monoGamePanel1.Tab.Buttons[i].HitBox.Contains(new Microsoft.Xna.Framework.Point(e.X, e.Y)))
                 {
                     count++;
                     indexes.Enqueue(i);
@@ -68,9 +70,9 @@ namespace MonogameFormsFirstProject
                 var index1 = indexes.Dequeue();
                 var index2 = indexes.Dequeue();
 
-                var temp = monoGamePanel1.Buttons[index1].Position;
-                monoGamePanel1.Buttons[index1].Position = monoGamePanel1.Buttons[index2].Position;
-                monoGamePanel1.Buttons[index2].Position = temp;
+                var temp = monoGamePanel1.Tab.Buttons[index1].Position;
+                monoGamePanel1.Tab.Buttons[index1].Position = monoGamePanel1.Tab.Buttons[index2].Position;
+                monoGamePanel1.Tab.Buttons[index2].Position = temp;
 
                 count = 0;
             }
@@ -133,9 +135,9 @@ namespace MonogameFormsFirstProject
 
         private void setButton_Click(object sender, EventArgs e)
         {
-            Bitmap croppedImage = new Bitmap(monoGamePanel1.SquareSize, monoGamePanel1.SquareSize);
-            int overExtendedAmountX = currentImage.Width - monoGamePanel1.SquareSize;
-            int overExtendedAmountY = currentImage.Height - monoGamePanel1.SquareSize;
+            Bitmap croppedImage = new Bitmap(SquareSize, SquareSize);
+            int overExtendedAmountX = currentImage.Width - SquareSize;
+            int overExtendedAmountY = currentImage.Height - SquareSize;
 
             bool didEnterX = false;
             bool didEnterY = false;
@@ -177,12 +179,12 @@ namespace MonogameFormsFirstProject
             currentImage.Width = croppedImage.Width;
             currentImage.Height = croppedImage.Height;
 
-            currentImage.Location = new System.Drawing.Point((int)(monoGamePanel1.SquareSize * currentThing.GridIndex.Item2 + monoGamePanel1.StartPosition.X) - monoGamePanel1.SquareSize / 2 + 5 * currentThing.GridIndex.Item2, (int)(monoGamePanel1.SquareSize * currentThing.GridIndex.Item1 + monoGamePanel1.StartPosition.Y - monoGamePanel1.SquareSize / 2 + 5 * currentThing.GridIndex.Item1));
+            currentImage.Location = new System.Drawing.Point((int)(SquareSize * currentThing.GridIndex.Item2 + monoGamePanel1.Tab.StartPosition.X) - SquareSize / 2 + 5 * currentThing.GridIndex.Item2, (int)(SquareSize * currentThing.GridIndex.Item1 + monoGamePanel1.Tab.StartPosition.Y - SquareSize / 2 + 5 * currentThing.GridIndex.Item1));
 
 
             GetData((Bitmap)currentImage.Image);
 
-            monoGamePanel1.NewImageInfo = currentThing;
+            monoGamePanel1.Tab.NewImageInfo = currentThing;
 
             currentThing = new CurrentMovingImageInfo();
             currentImage.Image = null;
@@ -192,6 +194,22 @@ namespace MonogameFormsFirstProject
             scaleYBox.Clear();
 
             Clipboard.Clear();
+        }
+
+       
+        private void firstTabButton_Click(object sender, EventArgs e)
+        {
+            monoGamePanel1.indexToUse = 0;
+        }
+
+        private void secondTabButton_Click(object sender, EventArgs e)
+        {
+            monoGamePanel1.indexToUse = 1;
+        }
+
+        private void thirdTabButton_Click(object sender, EventArgs e)
+        {
+            monoGamePanel1.indexToUse = 2;
         }
     }
 }
