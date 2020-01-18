@@ -73,6 +73,8 @@ namespace MonogameFormsFirstProject
                 return (int)(Texture.Height * Scale.Y);
             }
         }
+
+        public bool isSetImage { get; set; } = false;
     
         public Sprite(Texture2D texture, Vector2 position, Color color, Vector2 scale)
         {
@@ -91,7 +93,6 @@ namespace MonogameFormsFirstProject
         }
         public void Draw(SpriteBatch sb)
         {
-               
             sb.Draw(Texture, Position, SourceRectangle, Color, 0f, Origin, Scale, SpriteEffects.None, 0f);
         }
 
