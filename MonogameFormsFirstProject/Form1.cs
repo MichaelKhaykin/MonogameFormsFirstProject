@@ -19,7 +19,7 @@ namespace MonogameFormsFirstProject
         CurrentMovingImageInfo currentThing = new CurrentMovingImageInfo();
         int count = 0;
         Queue<(int y, int x)> indexes = new Queue<(int y, int x)>();
-  
+
         public static int SquareSize { get; } = 94;
         public Form1()
         {
@@ -51,30 +51,30 @@ namespace MonogameFormsFirstProject
         }
         private void monoGamePanel1_MouseDown(object sender, MouseEventArgs e)
         {
-            var (wasClicked, y, x) = monoGamePanel1.DoesHitBoxContainMouse();
+            var (wasClicked, y, x, isSetImage) = monoGamePanel1.DoesHitBoxContainMouse();
 
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                   var image = (Bitmap)Clipboard.GetImage();
+                    var image = (Bitmap)Clipboard.GetImage();
 
-                    
-                    int oldCount = count;
-
-                    for(int i = 0; i < monoGamePanel1.Tab.Grid.GetLength(0); i++)
+                    for (int i = 0; i < monoGamePanel1.Tab.Grid.GetLength(0); i++)
                     {
-                        for(int j = 0; j < monoGamePanel1.Tab.Grid.GetLength(1); j++)
+                        for (int j = 0; j < monoGamePanel1.Tab.Grid.GetLength(1); j++)
                         {
-                            if(monoGamePanel1.Tab.Grid[i, j].isSetImage && monoGamePanel1.Tab.Grid[i, j].HitBox.Contains(new Microsoft.Xna.Framework.Point(e.X, e.Y)))
+                            if (monoGamePanel1.Tab.Grid[i, j].isSetImage && monoGamePanel1.Tab.Grid[i, j].HitBox.Contains(new Microsoft.Xna.Framework.Point(e.X, e.Y)))
                             {
+                                if (indexes.Contains((i, j))) continue;
+
                                 count++;
                                 indexes.Enqueue((i, j));
+
                                 break;
                             }
                         }
                     }
 
-                    if (count % 2 == 0 && count != 0)
+                    if (indexes.Count == 2)
                     {
                         var index1 = indexes.Dequeue();
                         var index2 = indexes.Dequeue();
@@ -86,12 +86,11 @@ namespace MonogameFormsFirstProject
                         count = 0;
                     }
 
-                    
-
-                    if (wasClicked == false || oldCount != count)
+                    if (wasClicked == false || isSetImage)
                     {
                         return;
                     }
+
                     if (image == null)
                     {
                         MessageBox.Show("No image on clipboard");
@@ -113,7 +112,7 @@ namespace MonogameFormsFirstProject
 
                     monoGamePanel1.Tab.Grid[y, x].Texture = MonoGamePanel.GridTexture;
                     monoGamePanel1.Tab.Grid[y, x].isSetImage = false;
-      
+
                     break;
             }
         }
@@ -220,7 +219,7 @@ namespace MonogameFormsFirstProject
             Clipboard.Clear();
         }
 
-       
+
         private void firstTabButton_Click(object sender, EventArgs e)
         {
             monoGamePanel1.indexToUse = 0;

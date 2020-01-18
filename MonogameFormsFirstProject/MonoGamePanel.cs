@@ -47,7 +47,10 @@ namespace MonogameFormsFirstProject
 
             if (actualJson.Length == 0)
             {
-                InitTab(indexToUse);
+                for(int i = 0; i < Tabs.Length; i++)
+                {
+                    InitTab(i);
+                }
             }
             else
             {
@@ -55,6 +58,7 @@ namespace MonogameFormsFirstProject
 
                 for (int i = 0; i < Tabs.Length; i++)
                 {
+                    Tabs[i].count = 0;
                     Tabs[i].SpriteFont = Editor.Content.Load<SpriteFont>("Font");
 
                     foreach (var gridCell in Tabs[i].Grid)
@@ -99,7 +103,7 @@ namespace MonogameFormsFirstProject
             Tabs[index].SpriteFont = Editor.Content.Load<SpriteFont>("Font");
         }
 
-        public (bool wasClicked, int y, int x) DoesHitBoxContainMouse()
+        public (bool wasClicked, int y, int x, bool isSetImage) DoesHitBoxContainMouse()
         {
             Tab.count++;
             for (int i = 0; i < Tab.Grid.GetLength(0); i++)
@@ -108,11 +112,11 @@ namespace MonogameFormsFirstProject
                 {
                     if (Tab.Grid[i, j].HitBox.Contains(Editor.GetRelativeMousePosition.X, Editor.GetRelativeMousePosition.Y))
                     {
-                        return (true, i, j);
+                        return (true, i, j, Tab.Grid[i, j].isSetImage);
                     }
                 }
             }
-            return (false, 0, 0);
+            return (false, 0, 0, true);
         }
         protected override void Update(GameTime gameTime)
         {
@@ -127,6 +131,7 @@ namespace MonogameFormsFirstProject
                 button.SetTextureData();
 
                 Tab.Grid[Tab.NewImageInfo.GridIndex.Item1, Tab.NewImageInfo.GridIndex.Item2] = button;
+                Tab.Grid[Tab.NewImageInfo.GridIndex.Item1, Tab.NewImageInfo.GridIndex.Item2].isSetImage = true;
 
                 Tab.NewImageInfo.DataToSet = null;
             }
