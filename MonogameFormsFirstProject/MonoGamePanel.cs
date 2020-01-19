@@ -23,6 +23,8 @@ namespace MonogameFormsFirstProject
         public Texture2D Pixel { get; set; }
 
         public static Texture2D GridTexture;
+
+        public Sprite previewBox { get; set; }
         protected override void Initialize()
         {
             base.Initialize();
@@ -34,6 +36,9 @@ namespace MonogameFormsFirstProject
         private void LoadContent()
         {
             Clipboard.Clear();
+
+            var previewBoxTexture = Editor.Content.Load<Texture2D>("previewBox");
+            previewBox = new Sprite(previewBoxTexture, new Vector2(800, 300), Microsoft.Xna.Framework.Color.White, Vector2.One);
 
             for(int i = 0; i < Tabs.Length; i++)
             {
@@ -163,6 +168,8 @@ namespace MonogameFormsFirstProject
             }
 
             Editor.spriteBatch.DrawString(Tab.SpriteFont, $"Entered count:{Tab.count}", new Vector2(50, 50), Microsoft.Xna.Framework.Color.Black);
+
+            previewBox.Draw(Editor.spriteBatch);
 
             Editor.spriteBatch.End();
         }
