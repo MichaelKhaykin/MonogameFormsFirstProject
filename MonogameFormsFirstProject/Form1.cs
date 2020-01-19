@@ -111,6 +111,7 @@ namespace MonogameFormsFirstProject
                     if (wasClicked == false) return;
 
                     monoGamePanel1.Tab.Grid[y, x].Texture = MonoGamePanel.GridTexture;
+                    monoGamePanel1.Tab.Grid[y, x].SetTextureData();
                     monoGamePanel1.Tab.Grid[y, x].isSetImage = false;
 
                     break;
