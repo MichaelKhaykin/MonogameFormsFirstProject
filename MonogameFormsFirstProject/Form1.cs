@@ -28,6 +28,7 @@ namespace MonogameFormsFirstProject
             this.Width = Screen.FromControl(this).Bounds.Width;
             this.Height = Screen.FromControl(this).Bounds.Height;
 
+            previewPictureBox.BackColor = System.Drawing.Color.Transparent;
         }
 
         private void GetData(Bitmap image)
@@ -234,6 +235,14 @@ namespace MonogameFormsFirstProject
         private void thirdTabButton_Click(object sender, EventArgs e)
         {
             monoGamePanel1.indexToUse = 2;
+        }
+
+        private void previewPictureBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (currentImage.Image == null) return;
+
+            currentImage.Location = new System.Drawing.Point(previewPictureBox.Location.X - currentImage.Image.Width / 2 + previewPictureBox.Image.Width / 2, previewPictureBox.Location.Y - currentImage.Image.Height /2 + previewPictureBox.Image.Height / 2);
+ 
         }
     }
 }

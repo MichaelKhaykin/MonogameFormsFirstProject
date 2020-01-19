@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.scaleXBox = new System.Windows.Forms.TextBox();
             this.scaleXButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -41,7 +42,9 @@
             this.firstTabButton = new System.Windows.Forms.Button();
             this.secondTabButton = new System.Windows.Forms.Button();
             this.thirdTabButton = new System.Windows.Forms.Button();
+            this.previewPictureBox = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.currentImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // scaleXBox
@@ -117,12 +120,18 @@
             // 
             // monoGamePanel1
             // 
+            this.monoGamePanel1.indexToUse = 0;
             this.monoGamePanel1.Location = new System.Drawing.Point(0, 0);
             this.monoGamePanel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.monoGamePanel1.MouseHoverUpdatesOnly = false;
             this.monoGamePanel1.Name = "monoGamePanel1";
+            this.monoGamePanel1.Pixel = null;
             this.monoGamePanel1.Size = new System.Drawing.Size(2048, 1063);
             this.monoGamePanel1.TabIndex = 0;
+            this.monoGamePanel1.Tabs = new MonogameFormsFirstProject.Tab[] {
+        null,
+        null,
+        null};
             this.monoGamePanel1.Text = "monoGamePanel1";
             this.monoGamePanel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.monoGamePanel1_MouseDown);
             // 
@@ -134,7 +143,6 @@
             this.SaveButton.TabIndex = 9;
             this.SaveButton.Text = "Save";
             this.SaveButton.UseVisualStyleBackColor = true;
-            this.SaveButton.Click += new System.EventHandler(this.monoGamePanel1.SaveButton_Click);
             // 
             // firstTabButton
             // 
@@ -166,11 +174,23 @@
             this.thirdTabButton.UseVisualStyleBackColor = true;
             this.thirdTabButton.Click += new System.EventHandler(this.thirdTabButton_Click);
             // 
+            // previewPictureBox
+            // 
+            this.previewPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("previewPictureBox.Image")));
+            this.previewPictureBox.Location = new System.Drawing.Point(1000, 400);
+            this.previewPictureBox.Name = "previewPictureBox";
+            this.previewPictureBox.Size = new System.Drawing.Size(94, 94);
+            this.previewPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.previewPictureBox.TabIndex = 13;
+            this.previewPictureBox.TabStop = false;
+            this.previewPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.previewPictureBox_MouseClick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1517, 817);
+            this.Controls.Add(this.previewPictureBox);
             this.Controls.Add(this.thirdTabButton);
             this.Controls.Add(this.secondTabButton);
             this.Controls.Add(this.firstTabButton);
@@ -189,6 +209,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.currentImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -209,6 +230,7 @@
         private System.Windows.Forms.Button firstTabButton;
         private System.Windows.Forms.Button secondTabButton;
         private System.Windows.Forms.Button thirdTabButton;
+        private System.Windows.Forms.PictureBox previewPictureBox;
     }
 }
 
