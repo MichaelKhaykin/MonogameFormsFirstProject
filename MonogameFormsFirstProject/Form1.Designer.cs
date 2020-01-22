@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.scaleXBox = new System.Windows.Forms.TextBox();
             this.scaleXButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -36,15 +35,11 @@
             this.scaleYBox = new System.Windows.Forms.TextBox();
             this.scaleYButton = new System.Windows.Forms.Button();
             this.setButton = new System.Windows.Forms.Button();
-            this.currentImage = new System.Windows.Forms.PictureBox();
-            this.monoGamePanel1 = new MonogameFormsFirstProject.MonoGamePanel();
             this.SaveButton = new System.Windows.Forms.Button();
             this.firstTabButton = new System.Windows.Forms.Button();
             this.secondTabButton = new System.Windows.Forms.Button();
             this.thirdTabButton = new System.Windows.Forms.Button();
-            this.previewPictureBox = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.currentImage)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).BeginInit();
+            this.monoGamePanel1 = new MonogameFormsFirstProject.MonoGamePanel();
             this.SuspendLayout();
             // 
             // scaleXBox
@@ -109,14 +104,45 @@
             this.setButton.UseVisualStyleBackColor = true;
             this.setButton.Click += new System.EventHandler(this.setButton_Click);
             // 
-            // currentImage
+            // SaveButton
             // 
-            this.currentImage.Location = new System.Drawing.Point(0, 0);
-            this.currentImage.Name = "currentImage";
-            this.currentImage.Size = new System.Drawing.Size(100, 50);
-            this.currentImage.TabIndex = 8;
-            this.currentImage.TabStop = false;
-            this.currentImage.Visible = false;
+            this.SaveButton.Location = new System.Drawing.Point(1389, 58);
+            this.SaveButton.Name = "SaveButton";
+            this.SaveButton.Size = new System.Drawing.Size(75, 23);
+            this.SaveButton.TabIndex = 9;
+            this.SaveButton.Text = "Save";
+            this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
+            // 
+            // firstTabButton
+            // 
+            this.firstTabButton.Location = new System.Drawing.Point(12, 12);
+            this.firstTabButton.Name = "firstTabButton";
+            this.firstTabButton.Size = new System.Drawing.Size(75, 23);
+            this.firstTabButton.TabIndex = 10;
+            this.firstTabButton.Text = "1";
+            this.firstTabButton.UseVisualStyleBackColor = true;
+            this.firstTabButton.Click += new System.EventHandler(this.firstTabButton_Click);
+            // 
+            // secondTabButton
+            // 
+            this.secondTabButton.Location = new System.Drawing.Point(93, 12);
+            this.secondTabButton.Name = "secondTabButton";
+            this.secondTabButton.Size = new System.Drawing.Size(75, 23);
+            this.secondTabButton.TabIndex = 11;
+            this.secondTabButton.Text = "2";
+            this.secondTabButton.UseVisualStyleBackColor = true;
+            this.secondTabButton.Click += new System.EventHandler(this.secondTabButton_Click);
+            // 
+            // thirdTabButton
+            // 
+            this.thirdTabButton.Location = new System.Drawing.Point(174, 12);
+            this.thirdTabButton.Name = "thirdTabButton";
+            this.thirdTabButton.Size = new System.Drawing.Size(75, 23);
+            this.thirdTabButton.TabIndex = 12;
+            this.thirdTabButton.Text = "3";
+            this.thirdTabButton.UseVisualStyleBackColor = true;
+            this.thirdTabButton.Click += new System.EventHandler(this.thirdTabButton_Click);
             // 
             // monoGamePanel1
             // 
@@ -135,67 +161,15 @@
             this.monoGamePanel1.Text = "monoGamePanel1";
             this.monoGamePanel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.monoGamePanel1_MouseDown);
             // 
-            // SaveButton
-            // 
-            this.SaveButton.Location = new System.Drawing.Point(1389, 58);
-            this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(75, 23);
-            this.SaveButton.TabIndex = 9;
-            this.SaveButton.Text = "Save";
-            this.SaveButton.UseVisualStyleBackColor = true;
-            // 
-            // firstTabButton
-            // 
-            this.firstTabButton.Location = new System.Drawing.Point(126, 12);
-            this.firstTabButton.Name = "firstTabButton";
-            this.firstTabButton.Size = new System.Drawing.Size(75, 23);
-            this.firstTabButton.TabIndex = 10;
-            this.firstTabButton.Text = "1";
-            this.firstTabButton.UseVisualStyleBackColor = true;
-            this.firstTabButton.Click += new System.EventHandler(this.firstTabButton_Click);
-            // 
-            // secondTabButton
-            // 
-            this.secondTabButton.Location = new System.Drawing.Point(216, 12);
-            this.secondTabButton.Name = "secondTabButton";
-            this.secondTabButton.Size = new System.Drawing.Size(75, 23);
-            this.secondTabButton.TabIndex = 11;
-            this.secondTabButton.Text = "2";
-            this.secondTabButton.UseVisualStyleBackColor = true;
-            this.secondTabButton.Click += new System.EventHandler(this.secondTabButton_Click);
-            // 
-            // thirdTabButton
-            // 
-            this.thirdTabButton.Location = new System.Drawing.Point(310, 12);
-            this.thirdTabButton.Name = "thirdTabButton";
-            this.thirdTabButton.Size = new System.Drawing.Size(75, 23);
-            this.thirdTabButton.TabIndex = 12;
-            this.thirdTabButton.Text = "3";
-            this.thirdTabButton.UseVisualStyleBackColor = true;
-            this.thirdTabButton.Click += new System.EventHandler(this.thirdTabButton_Click);
-            // 
-            // previewPictureBox
-            // 
-            this.previewPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("previewPictureBox.Image")));
-            this.previewPictureBox.Location = new System.Drawing.Point(1000, 400);
-            this.previewPictureBox.Name = "previewPictureBox";
-            this.previewPictureBox.Size = new System.Drawing.Size(94, 94);
-            this.previewPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.previewPictureBox.TabIndex = 13;
-            this.previewPictureBox.TabStop = false;
-            this.previewPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.previewPictureBox_MouseClick);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1517, 817);
-            this.Controls.Add(this.previewPictureBox);
             this.Controls.Add(this.thirdTabButton);
             this.Controls.Add(this.secondTabButton);
             this.Controls.Add(this.firstTabButton);
             this.Controls.Add(this.SaveButton);
-            this.Controls.Add(this.currentImage);
             this.Controls.Add(this.setButton);
             this.Controls.Add(this.scaleYButton);
             this.Controls.Add(this.scaleYBox);
@@ -208,11 +182,19 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.currentImage)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+
+        private void SaveButton_MouseClick1(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void SaveButton_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            throw new System.NotImplementedException();
         }
 
         #endregion
@@ -225,12 +207,10 @@
         private System.Windows.Forms.TextBox scaleYBox;
         private System.Windows.Forms.Button scaleYButton;
         private System.Windows.Forms.Button setButton;
-        private System.Windows.Forms.PictureBox currentImage;
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.Button firstTabButton;
         private System.Windows.Forms.Button secondTabButton;
         private System.Windows.Forms.Button thirdTabButton;
-        private System.Windows.Forms.PictureBox previewPictureBox;
     }
 }
 

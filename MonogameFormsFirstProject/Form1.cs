@@ -16,7 +16,6 @@ namespace MonogameFormsFirstProject
 {
     public partial class Form1 : Form
     {
-        CurrentMovingImageInfo currentThing = new CurrentMovingImageInfo();
         int count = 0;
         Queue<(int y, int x)> indexes = new Queue<(int y, int x)>();
 
@@ -28,28 +27,8 @@ namespace MonogameFormsFirstProject
             this.Width = Screen.FromControl(this).Bounds.Width;
             this.Height = Screen.FromControl(this).Bounds.Height;
 
-            previewPictureBox.BackColor = System.Drawing.Color.Transparent;
         }
 
-        private void GetData(Bitmap image)
-        {
-            Microsoft.Xna.Framework.Color[] colors = new Microsoft.Xna.Framework.Color[image.Width * image.Height];
-            int count = 0;
-            for (int i = 0; i < image.Height; i++)
-            {
-                for (int j = 0; j < image.Width; j++)
-                {
-                    var color = image.GetPixel(j, i);
-                    colors[count] = new Microsoft.Xna.Framework.Color(color.R, color.G, color.B);
-                    count++;
-                }
-            }
-
-            currentThing.Width = image.Width;
-            currentThing.Height = image.Height;
-
-            currentThing.DataToSet = colors;
-        }
         private void monoGamePanel1_MouseDown(object sender, MouseEventArgs e)
         {
             var (wasClicked, y, x, isSetImage) = monoGamePanel1.DoesHitBoxContainMouse();
@@ -63,7 +42,7 @@ namespace MonogameFormsFirstProject
                     {
                         for (int j = 0; j < monoGamePanel1.Tab.Grid.GetLength(1); j++)
                         {
-                            if (monoGamePanel1.Tab.Grid[i, j].isSetImage && monoGamePanel1.Tab.Grid[i, j].HitBox.Contains(new Microsoft.Xna.Framework.Point(e.X, e.Y)))
+                            if (image == null && monoGamePanel1.Tab.Grid[i, j].HitBox.Contains(new Microsoft.Xna.Framework.Point(e.X, e.Y)))
                             {
                                 if (indexes.Contains((i, j))) continue;
 
@@ -86,26 +65,27 @@ namespace MonogameFormsFirstProject
 
                         count = 0;
                     }
+              
+                    
+                    if (image == null) return;
+
+                    Texture2D texture;
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                        texture = Texture2D.FromStream(monoGamePanel1.GraphicsDevice, stream);
+                    }
 
                     if (wasClicked == false || isSetImage)
                     {
                         return;
                     }
 
-                    if (image == null)
-                    {
-                        MessageBox.Show("No image on clipboard");
-                        return;
-                    }
+                    monoGamePanel1.Tab.NewImageInfo.GridIndex = (y, x);
+                
+                    var position = new Vector2(monoGamePanel1.PreviewBox.Position.X, monoGamePanel1.PreviewBox.Position.Y);
+                    monoGamePanel1.Tab.NewImageInfo.Sprite = new Sprite(texture, position, Microsoft.Xna.Framework.Color.White, Vector2.One);
 
-                    currentThing.GridIndex = (y, x);
-
-                    currentImage.Width = image.Width;
-                    currentImage.Height = image.Height;
-
-                    currentImage.Image = image;
-                    currentImage.Location = new System.Drawing.Point(600, 0);
-                    currentImage.Visible = true;
                     break;
 
                 case MouseButtons.Right:
@@ -121,7 +101,7 @@ namespace MonogameFormsFirstProject
 
         private void scaleXButton_Click(object sender, EventArgs e)
         {
-            if (currentImage.Image != null)
+            if (monoGamePanel1.Tab.NewImageInfo.Sprite != null)
             {
                 if (scaleXBox.Text.Length > 0)
                 {
@@ -131,15 +111,14 @@ namespace MonogameFormsFirstProject
                         MessageBox.Show("Invalid input");
                         return;
                     }
-                    currentImage.Width = (int)(currentImage.Image.Width * scale);
-                    currentImage.Image = new Bitmap(currentImage.Image, (int)(currentImage.Image.Width * scale), currentImage.Image.Height);
+                    monoGamePanel1.Tab.NewImageInfo.Sprite.Scale.X = scale;
                 }
             }
         }
 
         private void scaleYButton_Click(object sender, EventArgs e)
         {
-            if (currentImage.Image != null)
+            if (monoGamePanel1.Tab.NewImageInfo.Sprite != null)
             {
                 if (scaleYBox.Text.Length > 0)
                 {
@@ -149,78 +128,63 @@ namespace MonogameFormsFirstProject
                         MessageBox.Show("Invalid input");
                         return;
                     }
-                    currentImage.Height = (int)(currentImage.Image.Height * scale);
-                    currentImage.Image = new Bitmap(currentImage.Image, currentImage.Image.Width, (int)(currentImage.Image.Height * scale));
+                    monoGamePanel1.Tab.NewImageInfo.Sprite.Scale.Y = scale;
                 }
             }
         }
 
         private void setButton_Click(object sender, EventArgs e)
         {
-            if (currentImage.Image == null) return;
+            if (monoGamePanel1.Tab.NewImageInfo.Sprite == null) return;
 
-            Bitmap croppedImage = new Bitmap(SquareSize, SquareSize);
-            int overExtendedAmountX = currentImage.Width - SquareSize;
-            int overExtendedAmountY = currentImage.Height - SquareSize;
+            var startX = (int)(monoGamePanel1.PreviewBox.Position.X - monoGamePanel1.PreviewBox.ScaledWidth / 2) - (int)(monoGamePanel1.Tab.NewImageInfo.Sprite.Position.X - monoGamePanel1.Tab.NewImageInfo.Sprite.ScaledWidth / 2);
+            var startY = (int)(monoGamePanel1.PreviewBox.Position.Y - monoGamePanel1.PreviewBox.ScaledHeight / 2) - (int)(monoGamePanel1.Tab.NewImageInfo.Sprite.Position.Y - monoGamePanel1.Tab.NewImageInfo.Sprite.ScaledHeight / 2);
+            var endX = (int)(monoGamePanel1.PreviewBox.Position.X + monoGamePanel1.PreviewBox.ScaledWidth / 2) - (int)(monoGamePanel1.Tab.NewImageInfo.Sprite.Position.X - monoGamePanel1.Tab.NewImageInfo.Sprite.ScaledWidth / 2);
+            var endY = (int)(monoGamePanel1.PreviewBox.Position.Y + monoGamePanel1.PreviewBox.ScaledHeight / 2) - (int)(monoGamePanel1.Tab.NewImageInfo.Sprite.Position.Y - monoGamePanel1.Tab.NewImageInfo.Sprite.ScaledHeight / 2);
+            
 
-            bool didEnterX = false;
-            bool didEnterY = false;
-
-            if (overExtendedAmountX < 0)
+            Bitmap tempOgBitMap = null;
+            using (MemoryStream stream = new MemoryStream())
             {
-                currentImage.Width = 94;
-                currentImage.Image = new Bitmap(currentImage.Image, currentImage.Width, currentImage.Height);
+                var width = monoGamePanel1.Tab.NewImageInfo.Sprite.ScaledWidth;
+                var height = monoGamePanel1.Tab.NewImageInfo.Sprite.ScaledHeight;
+                monoGamePanel1.Tab.NewImageInfo.Sprite.Texture.SaveAsPng(stream, width, height);
 
-                didEnterX = true;
-            }
-            if (overExtendedAmountY < 0)
-            {
-                currentImage.Height = 94;
-                currentImage.Image = new Bitmap(currentImage.Image, currentImage.Width, currentImage.Height);
-
-                didEnterY = true;
+                tempOgBitMap = new Bitmap(stream);
             }
 
-            overExtendedAmountX = Math.Abs(overExtendedAmountX);
-            overExtendedAmountY = Math.Abs(overExtendedAmountY);
-
-            int startingX = didEnterX ? 0 : overExtendedAmountX / 2;
-            int endingX = didEnterX ? currentImage.Width : currentImage.Width - overExtendedAmountX / 2 - 1;
-
-            int startingY = didEnterY ? 0 : overExtendedAmountY / 2;
-            int endingY = didEnterY ? currentImage.Height : currentImage.Height - overExtendedAmountY / 2 - 1;
-
-            for (int i = startingX; i < endingX; i++)
+            Bitmap croppedImage = new Bitmap(94, 94);
+            for (int i = startX; i < endX; i++)
             {
-                for (int j = startingY; j < endingY; j++)
+                for (int j = startY; j < endY; j++)
                 {
-                    var color = ((Bitmap)(currentImage.Image)).GetPixel(i, j);
-                    croppedImage.SetPixel(i - startingX, j - startingY, color);
+                    var color = tempOgBitMap.GetPixel(i, j);
+                    croppedImage.SetPixel(i - startX, j - startY, color);
                 }
             }
 
-            currentImage.Image = croppedImage;
-            currentImage.Width = croppedImage.Width;
-            currentImage.Height = croppedImage.Height;
-
-            currentImage.Location = new System.Drawing.Point((int)(SquareSize * currentThing.GridIndex.Item2 + monoGamePanel1.Tab.StartPosition.X) - SquareSize / 2 + 5 * currentThing.GridIndex.Item2, (int)(SquareSize * currentThing.GridIndex.Item1 + monoGamePanel1.Tab.StartPosition.Y - SquareSize / 2 + 5 * currentThing.GridIndex.Item1));
-
-            GetData((Bitmap)currentImage.Image);
-
-            monoGamePanel1.Tab.NewImageInfo = currentThing;
-
-            currentThing = new CurrentMovingImageInfo();
-            currentImage.Image = null;
-            currentImage.Visible = false;
+            using (MemoryStream stream = new MemoryStream())
+            {
+                croppedImage.Save(stream, System.Drawing.Imaging.ImageFormat.Png); ;
+                monoGamePanel1.Tab.NewImageInfo.Sprite.Texture = Texture2D.FromStream(monoGamePanel1.GraphicsDevice, stream);
+            }
+            
+            monoGamePanel1.Tab.NewImageInfo.Sprite.Position = new Vector2((SquareSize * monoGamePanel1.Tab.NewImageInfo.GridIndex.Item2 + monoGamePanel1.Tab.StartPosition.X) - SquareSize / 2 + monoGamePanel1.Tab.Offset * monoGamePanel1.Tab.NewImageInfo.GridIndex.Item2 + monoGamePanel1.Tab.NewImageInfo.Sprite.ScaledWidth / 2, (SquareSize * monoGamePanel1.Tab.NewImageInfo.GridIndex.Item1 + monoGamePanel1.Tab.StartPosition.Y - SquareSize / 2 + monoGamePanel1.Tab.Offset * monoGamePanel1.Tab.NewImageInfo.GridIndex.Item1) + monoGamePanel1.Tab.NewImageInfo.Sprite.ScaledHeight / 2);
+            monoGamePanel1.Tab.NewImageInfo.isReadyToSet = true;
 
             scaleXBox.Clear();
             scaleYBox.Clear();
 
-
-
             Clipboard.Clear();
         }
 
+        public void SaveButton_Click(object sender, EventArgs e)
+        {
+            var dataToSave = JsonConvert.SerializeObject(monoGamePanel1.Tabs);
+
+            var path = Path.Combine(Environment.CurrentDirectory, "data.txt");
+            File.WriteAllText(path, dataToSave);
+        }
 
         private void firstTabButton_Click(object sender, EventArgs e)
         {
@@ -236,13 +200,5 @@ namespace MonogameFormsFirstProject
         {
             monoGamePanel1.indexToUse = 2;
         }
-
-        private void previewPictureBox_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (currentImage.Image == null) return;
-
-            currentImage.Location = new System.Drawing.Point(previewPictureBox.Location.X - currentImage.Image.Width / 2 + previewPictureBox.Image.Width / 2, previewPictureBox.Location.Y - currentImage.Image.Height /2 + previewPictureBox.Image.Height / 2);
- 
-        }
-    }
+   }
 }

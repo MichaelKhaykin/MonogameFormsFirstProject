@@ -23,6 +23,9 @@ namespace MonogameFormsFirstProject
         public Texture2D Pixel { get; set; }
 
         public static Texture2D GridTexture;
+
+        public Sprite PreviewBox;
+
         protected override void Initialize()
         {
             base.Initialize();
@@ -37,6 +40,9 @@ namespace MonogameFormsFirstProject
         {
             Clipboard.Clear();
 
+            PreviewBox = new Sprite(Editor.Content.Load<Texture2D>("previewBox"), new Vector2(800, 300), Microsoft.Xna.Framework.Color.White, Vector2.One);
+
+            
             for(int i = 0; i < Tabs.Length; i++)
             {
                 Tabs[i] = new Tab();
@@ -124,30 +130,19 @@ namespace MonogameFormsFirstProject
         {
             base.Update(gameTime);
 
-            if(Tab.NewImageInfo.DataToSet != null)
-            {
-                var newTexture = new Texture2D(GraphicsDevice, Tab.NewImageInfo.Width, Tab.NewImageInfo.Height);
-                newTexture.SetData(Tab.NewImageInfo.DataToSet);
-                
-                var button = new Sprite(newTexture, new Vector2(Tab.NewImageInfo.GridIndex.Item2 * Form1.SquareSize + Tab.StartPosition.X + Tab.Offset * Tab.NewImageInfo.GridIndex.Item2, Tab.NewImageInfo.GridIndex.Item1 * Form1.SquareSize + Tab.StartPosition.Y + Tab.Offset * Tab.NewImageInfo.GridIndex.Item1), Microsoft.Xna.Framework.Color.White, Vector2.One);
-                button.SetTextureData();
+            Tab.NewImageInfo.Sprite?.Update(gameTime);
 
-                Tab.Grid[Tab.NewImageInfo.GridIndex.Item1, Tab.NewImageInfo.GridIndex.Item2] = button;
+            if(Tab.NewImageInfo.isReadyToSet)
+            {
+                Tab.NewImageInfo.Sprite.SetTextureData();
+
+                Tab.Grid[Tab.NewImageInfo.GridIndex.Item1, Tab.NewImageInfo.GridIndex.Item2] = Tab.NewImageInfo.Sprite;
                 Tab.Grid[Tab.NewImageInfo.GridIndex.Item1, Tab.NewImageInfo.GridIndex.Item2].isSetImage = true;
 
-                Tab.NewImageInfo.DataToSet = null;
+                Tab.NewImageInfo.isReadyToSet = false;
+                Tab.NewImageInfo.Sprite = null;
             }
         }
-        
-        internal void SaveButton_Click(object sender, EventArgs e)
-        {
-            var dataToSave = JsonConvert.SerializeObject(Tabs);
-
-            var path = Path.Combine(Environment.CurrentDirectory, "data.txt");
-            File.WriteAllText(path, dataToSave);
-        }
-
-
         protected override void Draw()
         {
 
@@ -165,6 +160,10 @@ namespace MonogameFormsFirstProject
             }
 
             Editor.spriteBatch.DrawString(Tab.SpriteFont, $"Entered count:{Tab.count}", new Vector2(50, 50), Microsoft.Xna.Framework.Color.Black);
+
+            Tab.NewImageInfo.Sprite?.Draw(Editor.spriteBatch);
+
+            PreviewBox.Draw(Editor.spriteBatch);
 
             Editor.spriteBatch.End();
         }

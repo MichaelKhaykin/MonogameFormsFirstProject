@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -75,7 +76,9 @@ namespace MonogameFormsFirstProject
         }
 
         public bool isSetImage { get; set; } = false;
-    
+
+        [JsonIgnore]
+        public Dictionary<Keys, Action<GameTime>> Movements; 
         public Sprite(Texture2D texture, Vector2 position, Color color, Vector2 scale)
         {
             Texture = texture;
@@ -84,6 +87,14 @@ namespace MonogameFormsFirstProject
             Scale = scale;
 
             SourceRectangle = null;
+
+            Movements = new Dictionary<Keys, Action<GameTime>>()
+            {
+                [Keys.W] = (g) => Position.Y--,
+                [Keys.S] = (g) => Position.Y++,
+                [Keys.A] = (g) => Position.X--,
+                [Keys.D] = (g) => Position.X++
+            };
         }
 
         public void SetTextureData()
@@ -91,14 +102,27 @@ namespace MonogameFormsFirstProject
             TextureData = new Color[Form1.SquareSize * Form1.SquareSize];
             Texture.GetData(TextureData);
         }
+
+        public void Update(GameTime gameTime)
+        {
+            KeyboardState keyboard = Keyboard.GetState();
+            var pressedKeys = keyboard.GetPressedKeys();
+           
+            foreach(var key in pressedKeys)
+            {
+                if (!Movements.ContainsKey(key)) continue;
+
+                Movements[key](gameTime);
+            }
+        }
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(Texture, Position, SourceRectangle, Color, 0f, Origin, Scale, SpriteEffects.None, 0f);
+            sb.Draw(Texture, Position, SourceRectangle, Color, 0f, Origin, Scale, SpriteEffects.None, 1f);
         }
 
         public void Draw(SpriteBatch sb, Texture2D pixel)
         {
-            sb.Draw(Texture, Position, null, Color, 0f, Origin, Scale, SpriteEffects.None, 0f);
+            sb.Draw(Texture, Position, null, Color, 0f, Origin, Scale, SpriteEffects.None, 1f);
 
             if(HitBox.Y < 0)
             {
